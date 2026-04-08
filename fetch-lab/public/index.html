@@ -48,6 +48,20 @@ function statusCheck(response) {
       throw new Error('HTTP ' + response.status);
     });
 }
+
+const name = document.getElementById(
+  'name-input').value;
+fetch('/api/greet/' + name)
+  .then(statusCheck)
+  .then(res => res.json())
+  .then(data => {
+    /* display data.greeting */
+  })
+  .catch(error => {
+    /* handle error */
+  });
+
+
 document.getElementById('hello-btn')
   .addEventListener('click', () => {
     fetch('/hello')
