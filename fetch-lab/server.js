@@ -22,7 +22,13 @@ app.get('/hello', (req, res) => {
   res.type('text').send('Hello from the server!');
 });
 app.get('/api/time', (req, res) => {
-  res.type('json').send('{"current time": "${new Date().toISOString()"}')
+  res.json({
+    message: "Current server time:",
+    currentTime: new Date().toISOString()
+  });
+});
+app.get('/api/headers', (req, res) => {
+  res.json(req.headers);
 });
 
 app.get('/api/greet/:name', (req, res) => {
@@ -49,11 +55,32 @@ app.get('/api/unreliable', (req, res) => {
     });
   }
 });
-app.post('/api/messages', (req, res) => {
-text = req.query.text;
- 
 
+ 
+app.post('/api/messages', (req, res) => {
+  const { text, author } = req.body;
+
+ 
+  if (!text || !author) {
+    return res.status(400).json({
+      error: "text and author are required"
+    });
+  }
+
+
+  const newMessage = {
+    id: nextId++,
+    text: text,
+    author: author
+  };
+
+
+  messages.push(newMessage);
+
+  // Send back created message
+  res.status(201).json(newMessage);
 });
+
 app.get('/api/math', (req, res) => {
   let a = Number(req.query.a);
   let b = Number(req.query.b);
